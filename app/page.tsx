@@ -48,7 +48,7 @@ export default function Home() {
             </h1>
             <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed mb-10">
               Sistem kejut sahur <span className="text-white font-semibold">paling moden</span>.
-              Daftar member, set masa, dan kami pastikan tiada siapa yang "puasa yang-yang".
+              Daftar member, set masa, dan kami pastikan tiada siapa yang "tak bersahur bulan puasa".
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -177,6 +177,23 @@ export default function Home() {
 
           </div>
         </div>
+
+        {/* Sedekah / Support Section */}
+        <section className="mt-24 mb-24 text-center space-y-6 animate-in slide-in-from-bottom-8 duration-700 delay-300">
+          <div className="relative inline-block group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+            <div className="relative bg-slate-900 border border-slate-800 p-8 rounded-2xl max-w-sm mx-auto">
+              <h3 className="text-xl font-bold text-white font-serif mb-2">Support Developer</h3>
+              <p className="text-slate-400 text-sm mb-6">Nak bagi duit raya atau sedekah? Scan QR ni. Moga murah rezeki!</p>
+
+              <div className="bg-white p-4 rounded-xl mb-4">
+                <img src="/qr-sedekah.png" alt="QR Sedekah" className="w-full h-auto rounded-lg" />
+              </div>
+
+              <p className="text-xs text-slate-500 font-mono">GXBank</p>
+            </div>
+          </div>
+        </section>
 
         {/* --- Footer --- */}
         <footer className="border-t border-white/10 pt-10 flex flex-col md:flex-row justify-between items-center gap-6">

@@ -12,13 +12,30 @@ export default function MemberDashboard() {
     const router = useRouter();
 
     useEffect(() => {
-        const userData = localStorage.getItem("user");
-        if (userData) {
-            const parsed = JSON.parse(userData);
-            setUser(parsed);
-            setSahurTime(parsed.sahur_time || "05:00");
-        }
-    }, []);
+        const fetchUserData = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                router.push("/login");
+                return;
+            }
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/me`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const userData = await res.json();
+                    setUser(userData);
+                    setSahurTime(userData.sahur_time || "05:00");
+                    // Update local storage to keep it fresh
+                    localStorage.setItem("user", JSON.stringify(userData));
+                }
+            } catch (err) {
+                console.error("Failed to fetch user data", err);
+            }
+        };
+
+        fetchUserData();
+    }, [router]);
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -104,6 +121,23 @@ export default function MemberDashboard() {
                 </div>
             </div>
 
+            {/* Agent Payment QR Section */}
+            {user?.admin?.payment_qr && (
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl text-center">
+                    <h2 className="text-xl font-bold text-white mb-2">Bayar Servis Kejut</h2>
+                    <p className="text-slate-400 text-sm mb-6">Scan QR di bawah untuk bayar kepada Agent <strong>{user.admin.name}</strong>.</p>
+
+                    <div className="bg-white p-4 rounded-xl inline-block mb-4">
+                        <img
+                            src={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/storage/${user.admin.payment_qr}`}
+                            alt="Agent Payment QR"
+                            className="w-48 h-48 object-contain"
+                        />
+                    </div>
+                    <p className="text-xs text-slate-500 font-mono">TNG / DuitNow</p>
+                </div>
+            )}
+
             {/* Agent Info */}
             <div className="bg-slate-900/50 border border-slate-800/50 rounded-xl p-4 flex items-center gap-4">
                 <div className="bg-slate-800 p-2 rounded-lg text-slate-400">
@@ -112,12 +146,10 @@ export default function MemberDashboard() {
                 <div>
                     <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Agent Pengejut Anda</p>
                     <p className="text-sm font-medium text-white">
-                        {/* We might need to store agent name in user object or fetch it, for now generic or from migration if we added it */}
-                        Member (ID: {user.admin_id})
+                        {user.admin ? user.admin.name : `Member (ID: ${user.admin_id})`}
                     </p>
                 </div>
             </div>
-
         </div>
     );
 }

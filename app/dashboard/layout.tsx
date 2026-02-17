@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogOut, Home, User, LayoutDashboard } from "lucide-react";
+import { LogOut, Home, User, LayoutDashboard, QrCode } from "lucide-react";
 
 export default function DashboardLayout({
     children,
@@ -59,6 +59,12 @@ export default function DashboardLayout({
                         <Link href="/dashboard/agent/settings" className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-emerald-400 hover:bg-slate-800/50 rounded-lg transition-colors">
                             <User size={18} /> Settings
                         </Link>
+
+                        {user.role === 'agent' && (
+                            <Link href="/dashboard/agent/payment-qr" className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-emerald-400 hover:bg-slate-800/50 rounded-lg transition-colors">
+                                <QrCode size={18} /> Payment QR
+                            </Link>
+                        )}
                     </nav>
                 </div>
 
