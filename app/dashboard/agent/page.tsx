@@ -382,7 +382,7 @@ export default function AgentDashboard() {
                             {members.map((member) => (
                                 <div key={member.id} className={`bg-slate-900/50 border border-slate-800 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 group hover:border-slate-700 transition-all ${member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString() ? 'opacity-50 grayscale' : ''
                                     }`}>
-                                    <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-4 min-w-0 flex-1">
                                         <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 font-bold text-lg relative">
                                             {member.name.charAt(0)}
                                             {member.payment_status === 'paid' && (
@@ -391,9 +391,9 @@ export default function AgentDashboard() {
                                                 </div>
                                             )}
                                         </div>
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <p className={`font-bold text-white text-lg ${member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString() ? 'line-through text-slate-500' : ''
+                                        <div className="min-w-0">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <p className={`font-bold text-white text-lg truncate ${member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString() ? 'line-through text-slate-500' : ''
                                                     }`}>{member.name}</p>
                                                 <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase font-bold tracking-wider ${member.payment_status === 'paid'
                                                     ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
