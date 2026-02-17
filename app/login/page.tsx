@@ -82,14 +82,12 @@ export default function LoginPage() {
                     <div>
                         <div className="flex justify-between items-center">
                             <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">Password</label>
-                            <a
-                                href="https://wa.me/601114907908?text=Hi%20Admin%2C%20saya%20lupa%20password%20untuk%20login%20agent%20KejutSahur."
-                                target="_blank"
-                                rel="noopener noreferrer"
+                            <Link
+                                href="/forgot-password"
                                 className="text-xs text-purple-400 hover:text-purple-300"
                             >
                                 Forgot Password?
-                            </a>
+                            </Link>
                         </div>
                         <input
                             type="password"

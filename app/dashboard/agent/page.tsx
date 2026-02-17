@@ -11,6 +11,8 @@ export default function AgentDashboard() {
     const [notifications, setNotifications] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [filter, setFilter] = useState<'today' | 'custom'>('today');
+    const [customRange, setCustomRange] = useState({ start: '', end: '' });
     const router = useRouter();
 
     useEffect(() => {
@@ -33,8 +35,18 @@ export default function AgentDashboard() {
                     setMembers(await membersRes.json());
                 }
 
+                // Calculate date range based on filter
+                let query = '';
+                const today = new Date().toISOString().split('T')[0];
+
+                if (filter === 'today') {
+                    query = `?start_date=${today}&end_date=${today}`;
+                } else if (filter === 'custom' && customRange.start && customRange.end) {
+                    query = `?start_date=${customRange.start}&end_date=${customRange.end}`;
+                }
+
                 // Fetch Stats
-                const statsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/agent/stats`, { headers });
+                const statsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/agent/stats${query}`, { headers });
                 if (statsRes.ok) {
                     setStats(await statsRes.json());
                 }
@@ -53,7 +65,7 @@ export default function AgentDashboard() {
         };
 
         fetchData();
-    }, [router]);
+    }, [router, filter, customRange]);
 
 
     const handleAction = async (memberId: number, phoneNumber: string, action: 'call' | 'whatsapp') => {
@@ -77,7 +89,12 @@ export default function AgentDashboard() {
             if (action === 'call') {
                 window.location.href = `tel:${phoneNumber}`;
             } else {
-                window.open(`https://wa.me/${phoneNumber}?text=Bangun%20sahur%20oi!%20Dah%20pukul%20berapa%20ni!`, '_blank');
+                // Ensure proper WhatsApp format (60...)
+                let waNumber = phoneNumber.replace(/\D/g, ''); // Remove non-digits
+                if (waNumber.startsWith('0')) {
+                    waNumber = '6' + waNumber;
+                }
+                window.open(`https://wa.me/${waNumber}?text=Bangun%20sahur%20oi!%20Dah%20pukul%20berapa%20ni!`, '_blank');
             }
         } catch (error) {
             console.error("Failed to log action", error);
@@ -132,9 +149,46 @@ export default function AgentDashboard() {
     return (
         <div className="space-y-8">
             <header className="flex justify-between items-start">
-                <div>
-                    <h1 className="text-3xl font-bold text-white font-serif">Dashboard Pengejut</h1>
-                    <p className="text-slate-400">Senarai member yang perlu dikejutkan.</p>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 className="text-3xl font-bold text-white font-serif">Dashboard Pengejut</h1>
+                        <p className="text-slate-400">Senarai member yang perlu dikejutkan.</p>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2 bg-slate-900 p-1 rounded-lg border border-slate-800 self-start">
+                            <button
+                                onClick={() => setFilter('today')}
+                                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${filter === 'today' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                            >
+                                Hari Ini
+                            </button>
+                            <button
+                                onClick={() => setFilter('custom')}
+                                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${filter === 'custom' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                            >
+                                Custom
+                            </button>
+                        </div>
+
+                        {filter === 'custom' && (
+                            <div className="flex items-center gap-2 bg-slate-900 p-2 rounded-lg border border-slate-800 animate-in fade-in slide-in-from-top-2">
+                                <input
+                                    type="date"
+                                    className="bg-slate-950 text-white border border-slate-700 rounded px-2 py-1 text-xs outline-none focus:border-blue-500"
+                                    value={customRange.start}
+                                    onChange={(e) => setCustomRange({ ...customRange, start: e.target.value })}
+                                />
+                                <span className="text-slate-500">-</span>
+                                <input
+                                    type="date"
+                                    className="bg-slate-950 text-white border border-slate-700 rounded px-2 py-1 text-xs outline-none focus:border-blue-500"
+                                    value={customRange.end}
+                                    onChange={(e) => setCustomRange({ ...customRange, end: e.target.value })}
+                                />
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 <div className="flex gap-4">
@@ -200,15 +254,17 @@ export default function AgentDashboard() {
                     </div>
                     <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-purple-500/10 rounded-xl text-purple-500">
+                            <div className="p-3 bg-purple-500/10 rounded-xl text-purple-500 shrink-0">
                                 <Activity size={24} />
                             </div>
-                            <div>
+                            <div className="min-w-0 flex-1">
                                 <p className="text-slate-400 text-sm">Last Activity</p>
-                                <p className="text-sm font-medium text-white truncate w-32">
+                                <p className="text-sm font-medium text-white truncate">
                                     {stats.recent_activity?.[0] ? `${stats.recent_activity[0].action_type} - ${stats.recent_activity[0].member_name}` : "No activity"}
                                 </p>
-                                <p className="text-xs text-slate-500">{stats.recent_activity?.[0]?.created_at}</p>
+                                <p className="text-xs text-slate-500 truncate">
+                                    {stats.recent_activity?.[0] ? stats.recent_activity[0].created_at : ''}
+                                </p>
                             </div>
                         </div>
                     </div>

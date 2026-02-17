@@ -19,6 +19,7 @@ function RegisterContent() {
 
     const [form, setForm] = useState({
         name: "",
+        email: "",
         phone_number: "",
         referral_code: urlReferralCode || "",
         sahur_time: "05:00",
@@ -265,6 +266,17 @@ function RegisterContent() {
                                         placeholder="0123456789"
                                         value={form.phone_number}
                                         onChange={(e) => setForm({ ...form, phone_number: e.target.value })}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">Email (Optional)</label>
+                                    <input
+                                        type="email"
+                                        className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder:text-slate-700"
+                                        placeholder="email@example.com"
+                                        value={form.email}
+                                        onChange={(e) => setForm({ ...form, email: e.target.value })}
                                     />
                                 </div>
                             </div>
