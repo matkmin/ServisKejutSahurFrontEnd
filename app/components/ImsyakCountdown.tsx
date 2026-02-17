@@ -45,19 +45,11 @@ export default function ImsyakCountdown({ savedLocation }: Props) {
         }
 
         setLoading(true);
-        setLocationName("Detecting Location...");
-
-        // Safety timeout: If geolocation takes too long (ignoring browser's own timeout which can be flaky)
-        const locationTimer = setTimeout(() => {
-            console.warn("Manual geolocation timeout triggered");
-            // Fallback to IP Location
-            fetchIPLocation();
-        }, 11000); // 11s
+        setLocationName("Sila benarkan akses lokasi browser...");
 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    clearTimeout(locationTimer);
                     fetchPrayerTimes(position.coords.latitude, position.coords.longitude);
                     setLocationName(`Lat: ${position.coords.latitude.toFixed(2)}, Long: ${position.coords.longitude.toFixed(2)}`);
 
@@ -65,15 +57,14 @@ export default function ImsyakCountdown({ savedLocation }: Props) {
                     saveLocationToDB(position.coords.latitude, position.coords.longitude);
                 },
                 (error) => {
-                    clearTimeout(locationTimer);
                     console.warn("Geolocation error:", error.message);
-                    fetchIPLocation(); // Fallback to IP Location
+                    setLocationName("Gagal dapatkan lokasi. Sila refresh & benarkan lokasi.");
+                    // fetchIPLocation(); // DISABLED: User requested browser location only
                 },
-                { timeout: 10000, maximumAge: 10000 } // 10s
+                { timeout: 20000, maximumAge: 10000, enableHighAccuracy: true }
             );
         } else {
-            clearTimeout(locationTimer);
-            fetchIPLocation(); // Fallback to IP Location
+            setLocationName("Browser tidak menyokong geolocation.");
         }
     };
 
