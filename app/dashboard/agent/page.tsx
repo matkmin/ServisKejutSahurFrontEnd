@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Users, Phone, MessageCircle, Clock, Bell, Copy, Check, Loader2, Zap, Activity, Share2, Twitter, AtSign } from "lucide-react";
+import { Users, Phone, MessageCircle, Clock, Bell, Copy, Check, Loader2, Zap, Activity, Share2, Twitter, AtSign, CheckSquare } from "lucide-react";
 
 export default function AgentDashboard() {
     const [members, setMembers] = useState<any[]>([]);
@@ -141,6 +141,28 @@ export default function AgentDashboard() {
             }
         } catch (error) {
             console.error("Failed to toggle payment", error);
+        }
+    };
+
+    const handleToggleComplete = async (memberId: number) => {
+        try {
+            const token = localStorage.getItem("token");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/agent/member/${memberId}/toggle-complete`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/json"
+                }
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setMembers(prev => prev.map(m =>
+                    m.id === memberId ? { ...m, last_completed_at: data.member.last_completed_at } : m
+                ));
+            }
+        } catch (error) {
+            console.error("Failed to toggle completion", error);
         }
     };
 
@@ -340,7 +362,8 @@ export default function AgentDashboard() {
                     ) : (
                         <div className="grid gap-4">
                             {members.map((member) => (
-                                <div key={member.id} className="bg-slate-900/50 border border-slate-800 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 group hover:border-slate-700 transition-all">
+                                <div key={member.id} className={`bg-slate-900/50 border border-slate-800 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 group hover:border-slate-700 transition-all ${member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString() ? 'opacity-50 grayscale' : ''
+                                    }`}>
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 font-bold text-lg relative">
                                             {member.name.charAt(0)}
@@ -352,7 +375,8 @@ export default function AgentDashboard() {
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-2">
-                                                <p className="font-bold text-white text-lg">{member.name}</p>
+                                                <p className={`font-bold text-white text-lg ${member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString() ? 'line-through text-slate-500' : ''
+                                                    }`}>{member.name}</p>
                                                 <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase font-bold tracking-wider ${member.payment_status === 'paid'
                                                     ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
                                                     : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
@@ -374,10 +398,14 @@ export default function AgentDashboard() {
                                     <div className="flex items-center gap-2 w-full sm:w-auto">
                                         <button
                                             onClick={() => handleTogglePayment(member.id)}
-                                            className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all border ${member.payment_status === 'paid'
-                                                ? 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
-                                                : 'bg-emerald-600 text-white border-emerald-500 hover:bg-emerald-500 shadow-lg shadow-emerald-900/20'
+                                            disabled={!!(member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString())}
+                                            className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all border ${member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString()
+                                                    ? 'bg-slate-900 text-slate-700 border-slate-800 cursor-not-allowed opacity-50'
+                                                    : member.payment_status === 'paid'
+                                                        ? 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
+                                                        : 'bg-emerald-600 text-white border-emerald-500 hover:bg-emerald-500 shadow-lg shadow-emerald-900/20'
                                                 }`}
+                                            title={member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString() ? "Mark Incomplete first to change payment status" : ""}
                                         >
                                             {member.payment_status === 'paid' ? 'Revert Pending' : 'Mark Paid'}
                                         </button>
@@ -385,15 +413,45 @@ export default function AgentDashboard() {
                                         <div className="w-px h-8 bg-slate-800 mx-1 hidden sm:block"></div>
 
                                         <button
+                                            onClick={() => handleToggleComplete(member.id)}
+                                            disabled={member.payment_status !== 'paid'}
+                                            className={`p-2 rounded-lg transition-all border ${member.payment_status !== 'paid'
+                                                ? 'bg-slate-900 text-slate-700 border-slate-800 cursor-not-allowed opacity-50'
+                                                : member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString()
+                                                    ? 'bg-emerald-600 text-white border-emerald-500 shadow-lg shadow-emerald-900/20'
+                                                    : 'bg-slate-800 text-slate-500 border-slate-700 hover:border-slate-500 hover:text-slate-300'
+                                                }`}
+                                            title={
+                                                member.payment_status !== 'paid'
+                                                    ? "Payment Pending - Cannot Mark Complete"
+                                                    : member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString()
+                                                        ? "Mark Incomplete"
+                                                        : "Mark Complete"
+                                            }
+                                        >
+                                            <CheckSquare size={18} />
+                                        </button>
+
+                                        <div className="w-px h-8 bg-slate-800 mx-1 hidden sm:block"></div>
+
+                                        <button
                                             onClick={() => handleAction(member.id, member.phone_number, 'call')}
-                                            className="p-2 bg-slate-800 text-emerald-400 rounded-lg hover:bg-emerald-500 hover:text-white transition-all border border-slate-700 hover:border-emerald-400"
+                                            disabled={!!(member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString()) || member.payment_status !== 'paid'}
+                                            className={`p-2 rounded-lg transition-all border ${member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString() || member.payment_status !== 'paid'
+                                                ? 'bg-slate-900 text-slate-700 border-slate-800 cursor-not-allowed opacity-50'
+                                                : 'bg-slate-800 text-emerald-400 border-slate-700 hover:bg-emerald-500 hover:text-white hover:border-emerald-400'
+                                                }`}
                                             title="Call Now"
                                         >
                                             <Phone size={18} />
                                         </button>
                                         <button
                                             onClick={() => handleAction(member.id, member.phone_number, 'whatsapp')}
-                                            className="p-2 bg-slate-800 text-green-400 rounded-lg hover:bg-green-500 hover:text-white transition-all border border-slate-700 hover:border-green-400"
+                                            disabled={!!(member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString()) || member.payment_status !== 'paid'}
+                                            className={`p-2 rounded-lg transition-all border ${member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString() || member.payment_status !== 'paid'
+                                                ? 'bg-slate-900 text-slate-700 border-slate-800 cursor-not-allowed opacity-50'
+                                                : 'bg-slate-800 text-green-400 border-slate-700 hover:bg-green-500 hover:text-white hover:border-green-400'
+                                                }`}
                                             title="WhatsApp"
                                         >
                                             <MessageCircle size={18} />
