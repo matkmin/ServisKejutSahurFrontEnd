@@ -12,8 +12,11 @@ export default function RegisterAgent() {
     const [form, setForm] = useState({
         name: "",
         phone_number: "",
+        email: "",
         password: "",
     });
+
+    const [success, setSuccess] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -36,17 +39,35 @@ export default function RegisterAgent() {
                 throw new Error(data.message || "Registration failed");
             }
 
-            // Save token (in real app use secure storage/cookie)
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
+            // Don't auto-login, show success message
+            setSuccess(true);
 
-            router.push("/dashboard/agent");
         } catch (err: any) {
             setError(err.message);
         } finally {
             setLoading(false);
         }
     };
+
+    if (success) {
+        return (
+            <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
+                <div className="w-full max-w-md bg-slate-900/50 border border-slate-800 rounded-2xl p-8 backdrop-blur-sm shadow-2xl text-center">
+                    <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Star className="w-8 h-8 text-emerald-500" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white font-serif mb-2">Check Your Email!</h2>
+                    <p className="text-slate-400 mb-6">
+                        We've sent a verification link to <span className="text-white font-bold">{form.email}</span>.
+                        Please click the link to activate your account.
+                    </p>
+                    <Link href="/login" className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors font-bold">
+                        Back to Login
+                    </Link>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
@@ -77,6 +98,18 @@ export default function RegisterAgent() {
                             placeholder="Contoh: Amin Gempak"
                             value={form.name}
                             onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">Emel</label>
+                        <input
+                            type="email"
+                            required
+                            className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder:text-slate-700"
+                            placeholder="nama@example.com"
+                            value={form.email}
+                            onChange={(e) => setForm({ ...form, email: e.target.value })}
                         />
                     </div>
 

@@ -104,6 +104,29 @@ export default function AgentDashboard() {
         window.location.reload();
     }
 
+    const handleTogglePayment = async (memberId: number) => {
+        try {
+            const token = localStorage.getItem("token");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/agent/member/${memberId}/toggle-payment`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/json"
+                }
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                // Update local state
+                setMembers(prev => prev.map(m =>
+                    m.id === memberId ? { ...m, payment_status: data.member.payment_status } : m
+                ));
+            }
+        } catch (error) {
+            console.error("Failed to toggle payment", error);
+        }
+    };
+
     const unreadCount = notifications.length;
 
     return (
@@ -261,30 +284,60 @@ export default function AgentDashboard() {
                     ) : (
                         <div className="grid gap-4">
                             {members.map((member) => (
-                                <div key={member.id} className="bg-slate-900/50 border border-slate-800 p-4 rounded-xl flex justify-between items-center group hover:border-slate-700 transition-all">
+                                <div key={member.id} className="bg-slate-900/50 border border-slate-800 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 group hover:border-slate-700 transition-all">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 font-bold">
+                                        <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 font-bold text-lg relative">
                                             {member.name.charAt(0)}
+                                            {member.payment_status === 'paid' && (
+                                                <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white p-0.5 rounded-full border-2 border-slate-900">
+                                                    <Check size={10} />
+                                                </div>
+                                            )}
                                         </div>
                                         <div>
-                                            <p className="font-bold text-white">{member.name}</p>
-                                            <p className="text-sm text-slate-400 flex items-center gap-2">
-                                                <Clock size={12} className="text-amber-500" />
-                                                Sahur: {member.sahur_time}
-                                            </p>
+                                            <div className="flex items-center gap-2">
+                                                <p className="font-bold text-white text-lg">{member.name}</p>
+                                                <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase font-bold tracking-wider ${member.payment_status === 'paid'
+                                                    ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                                                    : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                                                    }`}>
+                                                    {member.payment_status === 'paid' ? 'PAID' : 'PENDING'}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-3 text-sm text-slate-400">
+                                                <p className="flex items-center gap-1.5">
+                                                    <Clock size={14} className="text-amber-500" />
+                                                    {member.sahur_time}
+                                                </p>
+                                                <span className="text-slate-700">•</span>
+                                                <p className="capitalize text-slate-500">{member.package?.replace('_', ' ') || 'Asas'}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="flex gap-2">
+
+                                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                                        <button
+                                            onClick={() => handleTogglePayment(member.id)}
+                                            className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all border ${member.payment_status === 'paid'
+                                                ? 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
+                                                : 'bg-emerald-600 text-white border-emerald-500 hover:bg-emerald-500 shadow-lg shadow-emerald-900/20'
+                                                }`}
+                                        >
+                                            {member.payment_status === 'paid' ? 'Revert Pending' : 'Mark Paid'}
+                                        </button>
+
+                                        <div className="w-px h-8 bg-slate-800 mx-1 hidden sm:block"></div>
+
                                         <button
                                             onClick={() => handleAction(member.id, member.phone_number, 'call')}
-                                            className="p-2 bg-emerald-900/30 text-emerald-400 rounded-lg hover:bg-emerald-500 hover:text-white transition-colors"
+                                            className="p-2 bg-slate-800 text-emerald-400 rounded-lg hover:bg-emerald-500 hover:text-white transition-all border border-slate-700 hover:border-emerald-400"
                                             title="Call Now"
                                         >
                                             <Phone size={18} />
                                         </button>
                                         <button
                                             onClick={() => handleAction(member.id, member.phone_number, 'whatsapp')}
-                                            className="p-2 bg-green-900/30 text-green-400 rounded-lg hover:bg-green-500 hover:text-white transition-colors"
+                                            className="p-2 bg-slate-800 text-green-400 rounded-lg hover:bg-green-500 hover:text-white transition-all border border-slate-700 hover:border-green-400"
                                             title="WhatsApp"
                                         >
                                             <MessageCircle size={18} />
