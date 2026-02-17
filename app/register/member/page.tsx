@@ -340,13 +340,36 @@ function RegisterContent() {
                                         className="text-xs text-amber-500 hover:text-amber-400 underline decoration-dotted underline-offset-4 flex items-center gap-1"
                                     >
                                         <div className="flex items-center gap-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2 2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg>
                                             Download QR
                                         </div>
                                     </a>
                                 </div>
                             </div>
                         )}
+
+                        {/* Total Price Summary */}
+                        <div className="bg-gradient-to-r from-amber-500/20 to-amber-600/20 border border-amber-500/30 rounded-xl p-4 flex justify-between items-center backdrop-blur-sm">
+                            <div>
+                                <p className="text-amber-200 text-sm font-medium uppercase tracking-wider">Total Harga</p>
+                                <p className="text-amber-500/60 text-xs">Bayar cash/QR kat agent.</p>
+                            </div>
+                            <div className="text-3xl font-bold text-amber-400 font-mono">
+                                RM {(() => {
+                                    let total = 0;
+                                    // Base
+                                    if (baseService === '2_call') total += 6;
+                                    else total += 3;
+
+                                    // Add-ons
+                                    if (selectedAddons.includes('mak_mak')) total += 2;
+                                    if (selectedAddons.includes('manja')) total += 5;
+                                    if (selectedAddons.includes('kaki')) total += 7;
+
+                                    return total;
+                                })()}
+                            </div>
+                        </div>
 
                         <button
                             type="submit"

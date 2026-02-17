@@ -1,9 +1,19 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Moon, AlarmClock, Star, ArrowRight, Sparkles, CloudMoon, Coffee, Music, Zap, Phone } from "lucide-react";
 
 export default function Home() {
+  const [totalUsers, setTotalUsers] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8032'}/api/public/stats`)
+      .then(res => res.json())
+      .then(data => setTotalUsers(data.total_users))
+      .catch(err => console.error("Failed to load stats", err));
+  }, []);
+
   return (
     <main className="relative min-h-screen bg-[#0f0518] text-white selection:bg-amber-500/30 font-sans overflow-x-hidden">
 
@@ -196,21 +206,30 @@ export default function Home() {
         </section>
 
         {/* --- Footer --- */}
-        <footer className="border-t border-white/10 pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
+        <footer className="mt-24 border-t border-white/5 bg-slate-900/50 backdrop-blur-sm p-8 text-center flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2 opacity-50">
             <Moon size={16} /> <span className="font-serif font-bold">KejutSahur</span>
           </div>
-          <p className="text-slate-500 text-sm">
-            &copy; 1447H / 2026M. Built for the Ummah.
-          </p>
-          <div className="flex gap-4">
-            {/* Social placeholders */}
-            <div className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 cursor-pointer transition-colors" />
-            <div className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 cursor-pointer transition-colors" />
+
+          {/* Total User Stat */}
+          {totalUsers !== null && (
+            <div className="bg-slate-800/50 border border-slate-700 px-4 py-1.5 rounded-full flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 order-first md:order-none mb-4 md:mb-0">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+              <span className="text-xs text-slate-300 font-mono">
+                <span className="font-bold text-white">{totalUsers}</span> Orang Sedia Dikejut
+              </span>
+            </div>
+          )}
+
+          <div className="flex items-center gap-4">
+            <p className="text-slate-500 text-sm">
+              &copy; 1447H / 2026M. Built for the Ummah.
+            </p>
           </div>
         </footer>
 
-      </div>
-    </main>
+
+      </div >
+    </main >
   );
 }

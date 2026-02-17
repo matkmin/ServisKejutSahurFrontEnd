@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Users, Phone, MessageCircle, Clock, Bell, Copy, Check, Loader2, Zap, Activity, Share2, Twitter, AtSign, CheckSquare } from "lucide-react";
+import { Users, Phone, MessageCircle, Clock, Bell, Copy, Check, Loader2, Zap, Activity, Share2, AtSign, CheckSquare } from "lucide-react";
+import ImsyakCountdown from "@/app/components/ImsyakCountdown";
 
 export default function AgentDashboard() {
     const [members, setMembers] = useState<any[]>([]);
     const [stats, setStats] = useState<any>(null);
+    const [user, setUser] = useState<any>(null);
     const [notifications, setNotifications] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -28,6 +30,12 @@ export default function AgentDashboard() {
                     "Authorization": `Bearer ${token}`,
                     "Accept": "application/json"
                 };
+
+                // Fetch User Profile (for Location)
+                const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/user`, { headers });
+                if (userRes.ok) {
+                    setUser(await userRes.json());
+                }
 
                 // Fetch Members
                 const membersRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/agent/members`, { headers });
@@ -249,6 +257,16 @@ export default function AgentDashboard() {
                 </div>
             </header>
 
+            {/* Imsyak Countdown */}
+            <div className="animate-in slide-in-from-top-4 duration-700">
+                <ImsyakCountdown
+                    savedLocation={user ? {
+                        latitude: user.latitude,
+                        longitude: user.longitude
+                    } : null}
+                />
+            </div>
+
             {/* Stats Overview */}
             {stats && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in slide-in-from-bottom-4 duration-700">
@@ -383,6 +401,28 @@ export default function AgentDashboard() {
                                                     }`}>
                                                     {member.payment_status === 'paid' ? 'PAID' : 'PENDING'}
                                                 </span>
+                                                {/* Price Display */}
+                                                <span className="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
+                                                    RM {(() => {
+                                                        let total = 0;
+                                                        // Base Price
+                                                        if (member.package === '2_call' || member.package === 'premium') total += 6;
+                                                        else total += 3; // default '1_call'/'asas' is RM 3
+
+                                                        // Add-ons Price
+                                                        if (Array.isArray(member.add_on)) {
+                                                            if (member.add_on.includes('mak_mak')) total += 2;
+                                                            if (member.add_on.includes('manja')) total += 5;
+                                                            if (member.add_on.includes('kaki')) total += 7;
+
+                                                            // Legacy support if old keys exist
+                                                            if (member.add_on.includes('1_call')) total += 2; // Treat as extra call
+                                                            if (member.add_on.includes('3_call')) total += 5;
+                                                            if (member.add_on.includes('motivational_quote')) total += 7;
+                                                        }
+                                                        return total;
+                                                    })()}
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-3 text-sm text-slate-400">
                                                 <p className="flex items-center gap-1.5">
@@ -391,6 +431,17 @@ export default function AgentDashboard() {
                                                 </p>
                                                 <span className="text-slate-700">•</span>
                                                 <p className="capitalize text-slate-500">{member.package?.replace('_', ' ') || 'Asas'}</p>
+
+                                                {/* Add-ons Display */}
+                                                {Array.isArray(member.add_on) && member.add_on.length > 0 && (
+                                                    <div className="flex gap-1">
+                                                        {member.add_on.map((addon: string, index: number) => (
+                                                            <span key={index} className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 capitalize">
+                                                                {addon.replace('_', ' ')}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -400,10 +451,10 @@ export default function AgentDashboard() {
                                             onClick={() => handleTogglePayment(member.id)}
                                             disabled={!!(member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString())}
                                             className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all border ${member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString()
-                                                    ? 'bg-slate-900 text-slate-700 border-slate-800 cursor-not-allowed opacity-50'
-                                                    : member.payment_status === 'paid'
-                                                        ? 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
-                                                        : 'bg-emerald-600 text-white border-emerald-500 hover:bg-emerald-500 shadow-lg shadow-emerald-900/20'
+                                                ? 'bg-slate-900 text-slate-700 border-slate-800 cursor-not-allowed opacity-50'
+                                                : member.payment_status === 'paid'
+                                                    ? 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
+                                                    : 'bg-emerald-600 text-white border-emerald-500 hover:bg-emerald-500 shadow-lg shadow-emerald-900/20'
                                                 }`}
                                             title={member.last_completed_at && new Date(member.last_completed_at).toDateString() === new Date().toDateString() ? "Mark Incomplete first to change payment status" : ""}
                                         >
