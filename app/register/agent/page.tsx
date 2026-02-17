@@ -186,6 +186,22 @@ export default function RegisterAgent() {
                         />
                     </div>
 
+
+                    {/* TNC Checkbox */}
+                    <div className="flex items-start gap-3 bg-slate-900/30 p-4 rounded-xl border border-slate-800 mt-4">
+                        <div className="flex items-center h-5">
+                            <input
+                                id="tnc"
+                                type="checkbox"
+                                required
+                                className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-emerald-600 focus:ring-emerald-500"
+                            />
+                        </div>
+                        <label htmlFor="tnc" className="text-sm text-slate-400">
+                            Saya bersetuju bahawa pihak Servis Kejut Sahur <strong className="text-white">tidak bertanggungjawab</strong> atas sebarang kerugian atau isu yang timbul semasa menjalankan tugas sebagai agent.
+                        </label>
+                    </div>
+
                     <button
                         type="submit"
                         disabled={loading}
@@ -194,7 +210,7 @@ export default function RegisterAgent() {
                         {loading ? <Loader2 className="animate-spin" /> : "Daftar Hero"}
                     </button>
                 </form>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

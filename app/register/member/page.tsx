@@ -371,6 +371,21 @@ function RegisterContent() {
                             </div>
                         </div>
 
+                        {/* TNC Checkbox */}
+                        <div className="flex items-start gap-3 bg-slate-900/30 p-4 rounded-xl border border-slate-800">
+                            <div className="flex items-center h-5">
+                                <input
+                                    id="tnc"
+                                    type="checkbox"
+                                    required
+                                    className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-emerald-600 focus:ring-emerald-500"
+                                />
+                            </div>
+                            <label htmlFor="tnc" className="text-sm text-slate-400">
+                                Saya bersetuju bahawa pihak Servis Kejut Sahur <strong className="text-white">tidak bertanggungjawab</strong> jika saya tetap tidak bangun sahur walaupun telah dikejut. Ini adalah ikhtiar tambahan saya sendiri.
+                            </label>
+                        </div>
+
                         <button
                             type="submit"
                             disabled={loading || (form.referral_code.length > 0 && !agent)}

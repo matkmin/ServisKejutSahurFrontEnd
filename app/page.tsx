@@ -222,24 +222,35 @@ export default function Home() {
         </section>
 
         {/* --- Footer --- */}
-        <footer className="mt-24 border-t border-white/5 bg-slate-900/50 backdrop-blur-sm p-8 text-center flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2 opacity-50">
-            <Moon size={16} /> <span className="font-serif font-bold">KejutSahur</span>
+        <footer className="mt-24 border-t border-white/5 bg-slate-900/50 backdrop-blur-sm p-8 flex flex-col items-center gap-6">
+          <div className="flex justify-between items-center w-full max-w-4xl mx-auto flex-col md:flex-row gap-4">
+            <div className="flex items-center gap-2 opacity-50">
+              <Moon size={16} /> <span className="font-serif font-bold">KejutSahur</span>
+            </div>
+
+            {/* Total User Stat */}
+            {totalUsers !== null && (
+              <div className="bg-slate-800/50 border border-slate-700 px-4 py-1.5 rounded-full flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+                <span className="text-xs text-slate-300 font-mono">
+                  <span className="font-bold text-white">{totalUsers}</span> Orang Sedia Dikejut
+                </span>
+              </div>
+            )}
+
+            <div className="flex items-center gap-4">
+              <p className="text-slate-500 text-sm">
+                &copy; 1447H / 2026M
+              </p>
+            </div>
           </div>
 
-          {/* Total User Stat */}
-          {totalUsers !== null && (
-            <div className="bg-slate-800/50 border border-slate-700 px-4 py-1.5 rounded-full flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 order-first md:order-none mb-4 md:mb-0">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-              <span className="text-xs text-slate-300 font-mono">
-                <span className="font-bold text-white">{totalUsers}</span> Orang Sedia Dikejut
-              </span>
-            </div>
-          )}
-
-          <div className="flex items-center gap-4">
-            <p className="text-slate-500 text-sm">
-              &copy; 1447H / 2026M. Built for the Ummah.
+          {/* Terms & Conditions / Disclaimer */}
+          <div className="max-w-2xl text-center border-t border-white/5 pt-6">
+            <p className="text-[10px] text-slate-600 leading-relaxed uppercase tracking-widest font-bold mb-2">Penafian & Terma (TNC)</p>
+            <p className="text-[11px] text-slate-500 leading-relaxed">
+              Servis Kejut Sahur adalah inisiatif komuniti sukarela. Pihak pembangun & agent <strong>tidak bertanggungjawab</strong> atas sebarang kegagalan bangun sahur, terlepas waktu imsyak, atau sebarang kerugian yang timbul akibat penggunaan sistem ini. <br />
+              Gunakan sebagai ikhtiar tambahan sahaja. Sila pasang alarm sendiri sebagai langkah berjaga-jaga utama. Tidur awal itu sunnah.
             </p>
           </div>
         </footer>
