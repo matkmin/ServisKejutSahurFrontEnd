@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Loader2, KeyRound } from "lucide-react";
@@ -13,6 +13,14 @@ export default function LoginPage() {
         phone_number: "",
         password: "",
     });
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user");
+        if (token && user) {
+            router.replace("/dashboard/agent");
+        }
+    }, [router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

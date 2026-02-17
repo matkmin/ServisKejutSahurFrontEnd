@@ -8,6 +8,22 @@ export default function Home() {
   const [totalUsers, setTotalUsers] = useState<number | null>(null);
 
   useEffect(() => {
+    // Check for existing session
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (token && user) {
+      try {
+        const userData = JSON.parse(user);
+        if (userData.role === 'agent') {
+          // Optional: verify token validity with API here if needed, but for speed we redirect
+          window.location.href = "/dashboard/agent";
+          return;
+        }
+      } catch (e) {
+        localStorage.clear();
+      }
+    }
+
     fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8032'}/api/public/stats`)
       .then(res => res.json())
       .then(data => setTotalUsers(data.total_users))
