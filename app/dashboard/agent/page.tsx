@@ -76,9 +76,24 @@ export default function AgentDashboard() {
     }, [router, filter, customRange]);
 
 
-    const handleAction = async (memberId: number, phoneNumber: string, action: 'call' | 'whatsapp') => {
+    const handleAction = async (memberId: number, phoneNumber: string, actionType: 'call' | 'whatsapp') => {
+        // Optimistic UI: Open Action First (to avoid popup blockers)
+        if (actionType === 'call') {
+            window.location.href = `tel:${phoneNumber}`;
+        } else if (actionType === 'whatsapp') {
+            // Ensure proper WhatsApp format (60...)
+            let waNumber = phoneNumber.replace(/\D/g, ''); // Remove non-digits
+            if (waNumber.startsWith('0')) {
+                waNumber = '6' + waNumber;
+            }
+            // Use location.href for mobile to ensure app opens, fall back to window.open if needed
+            // But window.open is better for consistency if desktop.
+            // For mobile compatibility, window.open in a direct click handler is usually fine.
+            window.open(`https://wa.me/${waNumber}?text=Bangun%20sahur%20oi!%20Dah%20pukul%20berapa%20ni!`, '_blank');
+        }
+
+        // Log Action in Background
         try {
-            // Log the action to backend
             const token = localStorage.getItem("token");
             await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/agent/action-log`, {
                 method: 'POST',
@@ -89,20 +104,14 @@ export default function AgentDashboard() {
                 },
                 body: JSON.stringify({
                     member_id: memberId,
-                    action_type: action,
-                    status: 'completed'
+                    action_type: actionType
                 })
             });
 
-            if (action === 'call') {
-                window.location.href = `tel:${phoneNumber}`;
-            } else {
-                // Ensure proper WhatsApp format (60...)
-                let waNumber = phoneNumber.replace(/\D/g, ''); // Remove non-digits
-                if (waNumber.startsWith('0')) {
-                    waNumber = '6' + waNumber;
-                }
-                window.open(`https://wa.me/${waNumber}?text=Bangun%20sahur%20oi!%20Dah%20pukul%20berapa%20ni!`, '_blank');
+            // Refresh stats silently
+            const tokenForStats = localStorage.getItem("token");
+            if (tokenForStats) {
+                fetchStats(tokenForStats, filter, customRange);
             }
         } catch (error) {
             console.error("Failed to log action", error);
