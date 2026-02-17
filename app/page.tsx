@@ -1,65 +1,199 @@
-import Image from "next/image";
+"use client";
+
+import Link from "next/link";
+import { Moon, AlarmClock, Star, ArrowRight, Sparkles, CloudMoon, Coffee, Music, Zap, Phone } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="relative min-h-screen bg-[#0f0518] text-white selection:bg-amber-500/30 font-sans overflow-x-hidden">
+
+      {/* --- Background Atmosphere --- */}
+      <div className="fixed inset-0 pointer-events-none">
+        {/* Islamic Pattern Overlay */}
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-[0.03] mix-blend-screen" />
+
+        {/* Gradient Orbs */}
+        <div className="absolute top-[-10%] left-[-10%] h-[800px] w-[800px] rounded-full bg-indigo-900/20 blur-[120px] animate-pulse" />
+        <div className="absolute top-[40%] right-[-20%] h-[600px] w-[600px] rounded-full bg-amber-600/10 blur-[120px] animate-pulse delay-1000" />
+        <div className="absolute bottom-[-10%] left-[20%] h-[600px] w-[600px] rounded-full bg-purple-900/20 blur-[120px]" />
+      </div>
+
+      <div className="container relative z-10 px-4 md:px-6 py-12 md:py-20 mx-auto max-w-7xl">
+
+        {/* --- Header / Nav --- */}
+        <nav className="flex justify-between items-center mb-20 animate-in fade-in slide-in-from-top-4 duration-1000">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-amber-500 rounded-xl rotate-3 flex items-center justify-center shadow-lg shadow-amber-500/20">
+              <Moon className="text-white fill-white" size={20} />
+            </div>
+            <span className="text-xl font-bold font-serif tracking-tight">Kejut<span className="text-amber-500">Sahur</span></span>
+          </div>
+
+          <Link href="/login" className="px-6 py-2 rounded-full border border-white/10 hover:bg-white/5 transition-colors text-sm font-medium backdrop-blur-sm">
+            Login Agent
+          </Link>
+        </nav>
+
+        {/* --- Hero Section --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-32">
+          <div className="lg:col-span-7 text-center lg:text-left animate-in slide-in-from-left-8 duration-1000 delay-100">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-950/50 border border-indigo-500/30 text-indigo-300 text-xs font-bold uppercase tracking-widest mb-6 backdrop-blur-md">
+              <Sparkles size={12} className="text-amber-400" /> Edisi Ramadan 1447H
+            </div>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-serif leading-[1.1] mb-8">
+              Bangun <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">
+                Tanpa Terlepas.
+              </span>
+            </h1>
+            <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed mb-10">
+              Sistem kejut sahur <span className="text-white font-semibold">paling moden</span>.
+              Daftar member, set masa, dan kami pastikan tiada siapa yang "puasa yang-yang".
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <Link href="/register/agent" className="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-indigo-950 font-bold rounded-2xl transition-all hover:scale-105 shadow-[0_0_30px_rgba(245,158,11,0.3)] flex items-center justify-center gap-3">
+                <AlarmClock size={20} /> Jadi Pengejut
+              </Link>
+              <Link href="/register/member" className="px-8 py-4 bg-indigo-900/50 hover:bg-indigo-800/50 text-white font-bold rounded-2xl border border-indigo-700/50 transition-all hover:scale-105 backdrop-blur-sm flex items-center justify-center gap-3">
+                <Moon size={20} /> Nak Dikejutkan
+              </Link>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 relative animate-in zoom-in-50 duration-1000 delay-300">
+            {/* Abstract Hero Visualization */}
+            <div className="relative w-full aspect-square max-w-[500px] mx-auto">
+              <div className="absolute inset-0 bg-gradient-to-tr from-amber-500 to-purple-600 rounded-full blur-[100px] opacity-20 animate-pulse"></div>
+              <div className="absolute inset-10 border border-white/10 rounded-full animate-[spin_60s_linear_infinite]"></div>
+              <div className="absolute inset-20 border border-white/5 rounded-full animate-[spin_40s_linear_infinite_reverse]"></div>
+
+              {/* Floating Card Simulation */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-80 bg-indigo-950/80 backdrop-blur-xl border border-indigo-700/50 rounded-3xl p-6 shadow-2xl skew-y-3 hover:skew-y-0 transition-transform duration-500 cursor-pointer group">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400"><Phone size={20} /></div>
+                  <div>
+                    <div className="h-2 w-20 bg-slate-700 rounded mb-1"></div>
+                    <div className="h-2 w-12 bg-slate-800 rounded"></div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="h-16 w-full bg-indigo-900/50 rounded-xl border border-indigo-800 flex items-center justify-center text-amber-500 font-mono text-2xl group-hover:scale-105 transition-transform">
+                    05:00 AM
+                  </div>
+                  <div className="h-2 w-full bg-slate-800 rounded"></div>
+                  <div className="h-2 w-3/4 bg-slate-800 rounded"></div>
+                  <div className="mt-4 inline-block px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-400 text-xs font-bold">Incoming Call...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* --- Bento Grid Features/Pricing --- */}
+        <div className="mb-32">
+          <h2 className="text-3xl md:text-4xl font-bold font-serif text-center mb-16">
+            Pakej <span className="text-amber-500">Ramadan</span>
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[180px]">
+
+            {/* Large Featured Card */}
+            <div className="md:col-span-2 lg:col-span-2 row-span-2 bg-gradient-to-br from-indigo-900 to-purple-900 rounded-3xl p-8 relative overflow-hidden group border border-white/5 hover:border-amber-500/30 transition-all">
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:rotate-12 duration-700">
+                <AlarmClock size={120} />
+              </div>
+              <div className="relative z-10 h-full flex flex-col justify-between">
+                <div>
+                  <div className="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center mb-4 text-indigo-950">
+                    <Zap size={24} fill="currentColor" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-2">Servis Asas</h3>
+                  <p className="text-indigo-200">Kejut bangun sahur standard. Confirm sedar.</p>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center p-3 bg-white/5 rounded-xl backdrop-blur-sm">
+                    <span>1 Kali Call</span>
+                    <span className="font-bold text-amber-400">RM 3</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-white/5 rounded-xl backdrop-blur-sm">
+                    <span>2 Kali Call</span>
+                    <span className="font-bold text-amber-400">RM 6</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Add-on 1 */}
+            <div className="bg-[#1a103c] rounded-3xl p-6 border border-white/5 hover:bg-[#231555] transition-colors flex flex-col justify-between group">
+              <div className="w-10 h-10 bg-rose-500/20 text-rose-400 rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                <Zap size={20} />
+              </div>
+              <div>
+                <h4 className="font-bold text-lg text-white">Suara Mak-mak</h4>
+                <p className="text-xs text-slate-400 mt-1">Garang & Efektif.</p>
+              </div>
+              <div className="text-right">
+                <span className="text-xl font-bold text-white">RM 2</span>
+              </div>
+            </div>
+
+            {/* Add-on 2 */}
+            <div className="bg-[#1a103c] rounded-3xl p-6 border border-white/5 hover:bg-[#231555] transition-colors flex flex-col justify-between group">
+              <div className="w-10 h-10 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                <Music size={20} />
+              </div>
+              <div>
+                <h4 className="font-bold text-lg text-white">Suara Manja</h4>
+                <p className="text-xs text-slate-400 mt-1">Lembut tapi bangun.</p>
+              </div>
+              <div className="text-right">
+                <span className="text-xl font-bold text-white">RM 5</span>
+              </div>
+            </div>
+
+            {/* Add-on 3 (Wide) */}
+            <div className="md:col-span-2 bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 border border-white/5 flex items-center justify-between group relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay" />
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-red-500/20 text-red-500 rounded-xl flex items-center justify-center">
+                    <Zap size={20} />
+                  </div>
+                  <h4 className="font-bold text-xl text-white">Pakej "Mintak Maki"</h4>
+                </div>
+                <p className="text-sm text-slate-400 max-w-xs">Untuk yang betul-betul liat. Kami tak tanggungjawab kalau gaduh.</p>
+              </div>
+              <div className="relative z-10 bg-red-500 text-white px-4 py-2 rounded-xl font-bold text-xl shadow-lg shadow-red-900/50">
+                RM 7
+              </div>
+            </div>
+
+            {/* Filler / Decorative */}
+            <div className="bg-amber-500 rounded-3xl p-6 flex flex-col items-center justify-center text-center text-indigo-950">
+              <Coffee size={32} className="mb-2" />
+              <span className="font-bold leading-tight">Jangan<br />Skip<br />Sahur!</span>
+            </div>
+
+          </div>
+        </div>
+
+        {/* --- Footer --- */}
+        <footer className="border-t border-white/10 pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-2 opacity-50">
+            <Moon size={16} /> <span className="font-serif font-bold">KejutSahur</span>
+          </div>
+          <p className="text-slate-500 text-sm">
+            &copy; 1447H / 2026M. Built for the Ummah.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+          <div className="flex gap-4">
+            {/* Social placeholders */}
+            <div className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 cursor-pointer transition-colors" />
+            <div className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 cursor-pointer transition-colors" />
+          </div>
+        </footer>
+
+      </div>
+    </main>
   );
 }
