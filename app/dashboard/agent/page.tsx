@@ -222,38 +222,7 @@ export default function AgentDashboard() {
                 </div>
 
                 <div className="flex gap-4">
-                    {/* Simulation Button (Dev Only) */}
-                    <button onClick={simulateSahurTime} className="p-3 bg-slate-800 text-slate-400 rounded-full hover:bg-slate-700 transition" title="Simulate Sahur">
-                        <Zap size={20} />
-                    </button>
-
-                    <div className="relative">
-                        <button className="p-3 bg-slate-800 text-slate-400 rounded-full hover:bg-slate-700 transition">
-                            <Bell size={20} />
-                            {unreadCount > 0 && (
-                                <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full animate-pulse border-2 border-slate-950"></span>
-                            )}
-                        </button>
-
-                        {/* Notifications Dropdown */}
-                        {unreadCount > 0 && (
-                            <div className="absolute right-0 mt-2 w-80 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-50 overflow-hidden">
-                                <div className="p-3 border-b border-slate-800 flex justify-between items-center">
-                                    <h3 className="text-sm font-bold text-white">Notifications</h3>
-                                    <button onClick={markAsRead} className="text-xs text-emerald-500 hover:text-emerald-400">Mark all read</button>
-                                </div>
-                                <div className="max-h-64 overflow-y-auto">
-                                    {notifications.map((notif: any) => (
-                                        <div key={notif.id} className="p-3 border-b border-slate-800/50 hover:bg-slate-800/30 transition">
-                                            <p className="text-sm text-white font-medium">{notif.data.title}</p>
-                                            <p className="text-xs text-slate-400 mt-1">{notif.data.message}</p>
-                                            <p className="text-xs text-slate-500 mt-2">{new Date(notif.created_at).toLocaleTimeString()}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    {/* Buttons removed for cleanup */}
                 </div>
             </header>
 
