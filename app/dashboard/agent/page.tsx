@@ -17,61 +17,61 @@ export default function AgentDashboard() {
     const [customRange, setCustomRange] = useState({ start: '', end: '' });
     const router = useRouter();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                if (!token) {
-                    router.push("/login");
-                    return;
-                }
-
-                const headers = {
-                    "Authorization": `Bearer ${token}`,
-                    "Accept": "application/json"
-                };
-
-                // Fetch User Profile (for Location)
-                const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/user`, { headers });
-                if (userRes.ok) {
-                    setUser(await userRes.json());
-                }
-
-                // Fetch Members
-                const membersRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/agent/members`, { headers });
-                if (membersRes.ok) {
-                    setMembers(await membersRes.json());
-                }
-
-                // Calculate date range based on filter
-                let query = '';
-                const today = new Date().toISOString().split('T')[0];
-
-                if (filter === 'today') {
-                    query = `?start_date=${today}&end_date=${today}`;
-                } else if (filter === 'custom' && customRange.start && customRange.end) {
-                    query = `?start_date=${customRange.start}&end_date=${customRange.end}`;
-                }
-
-                // Fetch Stats
-                const statsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/agent/stats${query}`, { headers });
-                if (statsRes.ok) {
-                    setStats(await statsRes.json());
-                }
-
-                // Fetch Notifications
-                const notifRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/agent/notifications`, { headers });
-                if (notifRes.ok) {
-                    setNotifications(await notifRes.json());
-                }
-
-            } catch (err: any) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
+    const fetchData = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                router.push("/login");
+                return;
             }
-        };
 
+            const headers = {
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json"
+            };
+
+            // Fetch User Profile (for Location)
+            const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/user`, { headers });
+            if (userRes.ok) {
+                setUser(await userRes.json());
+            }
+
+            // Fetch Members
+            const membersRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/agent/members`, { headers });
+            if (membersRes.ok) {
+                setMembers(await membersRes.json());
+            }
+
+            // Calculate date range based on filter
+            let query = '';
+            const today = new Date().toISOString().split('T')[0];
+
+            if (filter === 'today') {
+                query = `?start_date=${today}&end_date=${today}`;
+            } else if (filter === 'custom' && customRange.start && customRange.end) {
+                query = `?start_date=${customRange.start}&end_date=${customRange.end}`;
+            }
+
+            // Fetch Stats
+            const statsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/agent/stats${query}`, { headers });
+            if (statsRes.ok) {
+                setStats(await statsRes.json());
+            }
+
+            // Fetch Notifications
+            const notifRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/agent/notifications`, { headers });
+            if (notifRes.ok) {
+                setNotifications(await notifRes.json());
+            }
+
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchData();
     }, [router, filter, customRange]);
 
@@ -109,10 +109,7 @@ export default function AgentDashboard() {
             });
 
             // Refresh stats silently
-            const tokenForStats = localStorage.getItem("token");
-            if (tokenForStats) {
-                fetchStats(tokenForStats, filter, customRange);
-            }
+            fetchData();
         } catch (error) {
             console.error("Failed to log action", error);
         }
