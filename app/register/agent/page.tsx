@@ -36,6 +36,24 @@ export default function RegisterAgent() {
             const data = await res.json();
 
             if (!res.ok) {
+                if (res.status === 422 && JSON.stringify(data).toLowerCase().includes('email')) {
+                    if (confirm("Email already registered. Would you like to resend the verification email?")) {
+                        const resend = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/email/resend`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: form.email })
+                        });
+
+                        if (resend.ok) {
+                            alert("Verification email resent!");
+                            setSuccess(true);
+                            return;
+                        } else {
+                            const resendData = await resend.json();
+                            throw new Error(resendData.message || "Failed to resend email");
+                        }
+                    }
+                }
                 throw new Error(data.message || "Registration failed");
             }
 
@@ -57,13 +75,44 @@ export default function RegisterAgent() {
                         <Star className="w-8 h-8 text-emerald-500" />
                     </div>
                     <h2 className="text-2xl font-bold text-white font-serif mb-2">Check Your Email!</h2>
-                    <p className="text-slate-400 mb-6">
-                        We've sent a verification link to <span className="text-white font-bold">{form.email}</span>.
-                        Please click the link to activate your account.
-                    </p>
-                    <Link href="/login" className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors font-bold">
-                        Back to Login
-                    </Link>
+                    <p className="text-slate-300 mb-6">We've sent a verification link to <span className="text-emerald-400 font-bold">{form.email}</span>. Please click the link to activate your account.</p>
+
+                    <div className="space-y-3">
+                        <Link href="/login" className="block w-full text-center px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-900/20">
+                            Back to Login
+                        </Link>
+
+                        <button
+                            onClick={async (e) => {
+                                const btn = e.currentTarget;
+                                btn.disabled = true;
+                                btn.textContent = "Sending...";
+                                try {
+                                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8032"}/api/email/resend`, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ email: form.email })
+                                    });
+                                    if (res.ok) {
+                                        alert("Verification email resent!");
+                                        btn.textContent = "Resent!";
+                                    } else {
+                                        const data = await res.json();
+                                        alert(data.message || "Failed to resend.");
+                                        btn.textContent = "Resend Verification Email";
+                                        btn.disabled = false;
+                                    }
+                                } catch (err) {
+                                    alert("Error connecting to server.");
+                                    btn.textContent = "Resend Verification Email";
+                                    btn.disabled = false;
+                                }
+                            }}
+                            className="block w-full text-center px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-all border border-slate-700"
+                        >
+                            Resend Verification Email
+                        </button>
+                    </div>
                 </div>
             </div>
         )
