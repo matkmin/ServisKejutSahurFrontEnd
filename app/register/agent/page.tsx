@@ -57,8 +57,13 @@ export default function RegisterAgent() {
                 throw new Error(data.message || "Registration failed");
             }
 
-            // Don't auto-login, show success message
-            setSuccess(true);
+            // Auto-login successful
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+
+            // Force reload/redirect to dashboard
+            window.location.href = "/dashboard/agent";
+            return;
 
         } catch (err: any) {
             setError(err.message);
