@@ -221,6 +221,34 @@ export default function Home() {
           </div>
         </section>
 
+        {/* --- FAQ Section --- */}
+        <section className="mb-24 px-6 max-w-2xl mx-auto space-y-8 animate-in slide-in-from-bottom-8 duration-700 delay-500">
+          <h3 className="text-2xl font-bold text-white font-serif text-center mb-8">Soalan Lazim (FAQ)</h3>
+
+          <div className="space-y-6">
+            <div className="bg-slate-900/50 border border-slate-800 p-6 rounded-2xl">
+              <h4 className="font-bold text-amber-500 mb-2">Kalau dah bayar tapi tak kejut?</h4>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Sila hubungi agent (Pengejut) tersebut untuk refund. <span className="text-white font-bold">Segala urusan pembayaran dan servis adalah tanggungjawab antara anda dan agent sepenuhnya.</span> Pihak kami tidak bertanggungjawab atas sebarang kerugian.
+              </p>
+            </div>
+
+            <div className="bg-slate-900/50 border border-slate-800 p-6 rounded-2xl">
+              <h4 className="font-bold text-amber-500 mb-2">Siapa pegang duit bayaran?</h4>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Duit terus masuk ke poket agent. Kami hanya platform perantaraan untuk menghubungkan anda dengan member yang rajin bangun sahur.
+              </p>
+            </div>
+
+            <div className="bg-slate-900/50 border border-slate-800 p-6 rounded-2xl">
+              <h4 className="font-bold text-amber-500 mb-2">Boleh percaya ke agent ni?</h4>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Kami cuba sehabis baik untuk mengesahkan identiti agent. Namun, ini adalah <span className="text-white font-bold">ikhtiar bersama</span>. Kami sarankan anda hanya melantik agent yang anda kenali atau yakin boleh dipercayai.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* --- Footer --- */}
         <footer className="mt-24 border-t border-white/5 bg-slate-900/50 backdrop-blur-sm p-8 flex flex-col items-center gap-6">
           <div className="flex justify-between items-center w-full max-w-4xl mx-auto flex-col md:flex-row gap-4">

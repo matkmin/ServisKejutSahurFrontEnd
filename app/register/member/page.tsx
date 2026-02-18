@@ -151,7 +151,7 @@ function RegisterContent() {
                 throw new Error(data.message || "Registration failed. Check referral code.");
             }
 
-            router.push(`/success?agent=${data.agent}`);
+            router.push(`/success?agent=${encodeURIComponent(data.agent_name)}&phone=${data.agent_phone}`);
         } catch (err: any) {
             setError(err.message);
         } finally {

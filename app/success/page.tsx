@@ -8,6 +8,7 @@ import { Suspense } from "react";
 function SuccessContent() {
     const searchParams = useSearchParams();
     const agentName = searchParams.get("agent") || "Agent";
+    const agentPhone = searchParams.get("phone") || "";
 
     return (
         <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 text-center">
@@ -21,6 +22,22 @@ function SuccessContent() {
                     Mantap! <span className="text-amber-400 font-bold">{agentName}</span> dah dapat notifikasi.
                     Tunggu je call waktu sahur nanti.
                 </p>
+
+                {agentPhone && (
+                    <div className="bg-amber-900/20 p-4 rounded-xl border border-amber-900/50 mb-6">
+                        <p className="text-xs text-amber-500 uppercase tracking-wider mb-2 font-bold">Simpan Nombor Agent Ni:</p>
+                        <p className="text-2xl font-mono text-white mb-4">{agentPhone}</p>
+
+                        <a
+                            href={`https://wa.me/60${agentPhone.replace(/^0+/, '')}?text=Salam%20${agentName},%20saya%20baru%20register%20KejutSahur!`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-all w-full"
+                        >
+                            WhatsApp Agent Sekarang
+                        </a>
+                    </div>
+                )}
 
                 <div className="bg-slate-950/50 p-4 rounded-xl border border-slate-800 mb-8">
                     <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Status</p>
